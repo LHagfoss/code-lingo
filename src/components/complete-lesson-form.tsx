@@ -8,6 +8,8 @@ const initialState = {
     success: false,
 };
 
+import { AppButton } from "./ui/app-button";
+
 export function CompleteLessonForm({
     lessonId,
     isCompleted,
@@ -17,24 +19,26 @@ export function CompleteLessonForm({
 }) {
     const completeLessonWithId = completeLessonAction.bind(null, lessonId);
 
-    const [state, formAction, isPending] = useActionState(
+    const [_state, formAction, isPending] = useActionState(
         completeLessonWithId,
         initialState,
     );
 
     return (
         <form action={formAction}>
-            <button
+            <AppButton
                 type="submit"
                 disabled={isCompleted || isPending}
-                className={`px-3 py-1 text-sm rounded font-bold transition-colors ${
+                variant={isCompleted ? "success" : "secondary"}
+                size="sm"
+                className={
                     isCompleted
-                        ? "bg-green-100 text-green-700 cursor-default"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                }`}
+                        ? "bg-green-100 text-green-700 border-green-200"
+                        : "bg-gray-200 border-gray-300 text-gray-700"
+                }
             >
                 {isCompleted ? "✅ DONE" : isPending ? "..." : "START"}
-            </button>
+            </AppButton>
         </form>
     );
 }

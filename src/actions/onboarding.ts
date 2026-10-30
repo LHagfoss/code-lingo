@@ -14,7 +14,7 @@ function getAdminClient() {
 }
 
 export async function completeOnboardingAction(
-    prevState: any,
+    _prevState: any,
     formData: FormData,
 ) {
     const user = await getAuthUser();

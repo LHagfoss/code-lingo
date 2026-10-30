@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { AppText } from "@/components/ui/app-text";
 
 interface AdminSectionProps {
@@ -9,7 +9,9 @@ interface AdminSectionProps {
 export function AdminSection({ title, children }: AdminSectionProps) {
     return (
         <div className="space-y-6">
-            <AppText as="h2" size="2xl" variant="primary">{title}</AppText>
+            <AppText as="h2" size="2xl" variant="primary">
+                {title}
+            </AppText>
             {children}
         </div>
     );

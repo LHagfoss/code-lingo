@@ -1,11 +1,13 @@
 "use client";
 
-import { SignOut } from "@/components/auth/sign-out";
-import usePathCheck from "@/hooks/usePathCheck";
-import { AppButton } from "@/components/ui/app-button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import AppLogo from "./app-logo";
+import { Activity } from "react";
+import { SignOut } from "@/components/auth/sign-out";
+import { AppButton } from "@/components/ui/app-button";
+import AppLogo from "@/components/ui/app-logo";
+import { AppText } from "@/components/ui/app-text";
+import usePathCheck from "@/hooks/usePathCheck";
 
 type HeaderProps = {
     role?: "user" | "admin";
@@ -20,15 +22,20 @@ export default function Header({ role }: Readonly<HeaderProps>) {
 
     const isActivePath = (path: string) => pathname.startsWith(path);
 
+    const isAdmin = role === "admin";
+
     if (isSignInPage || rootPage || isOnboardingPage) {
         return null;
     } else {
         return (
-            <header className="bg-white flex items-center justify-between p-4 shadow-[0_4px_0_rgb(0,0,0,0.06)]">
+            <header className="bg-white flex items-center justify-between p-4 border-b-4 border-slate-200">
                 <div className="flex-1 flex items-center">
                     <Link href="/" className="flex items-center gap-2">
-                        <AppLogo size="md" />{" "}
-                        <p className="text-xl font-bold">CodeLingo</p>
+                        <div className="bg-blue-600 border-2 border-blue-700 border-b-4 rounded-xl p-1">
+                            <AppLogo size="sm" variant="white" />
+                        </div>
+
+                        <AppText size="lg">CodeLingo</AppText>
                     </Link>
                 </div>
 
@@ -60,7 +67,7 @@ export default function Header({ role }: Readonly<HeaderProps>) {
                     >
                         Courses
                     </AppButton>
-                    {role === "admin" && (
+                    <Activity mode={isAdmin ? "visible" : "hidden"}>
                         <AppButton
                             variant={
                                 isActivePath("/admin") ? "primary" : "secondary"
@@ -70,7 +77,7 @@ export default function Header({ role }: Readonly<HeaderProps>) {
                         >
                             Admin
                         </AppButton>
-                    )}
+                    </Activity>
                 </div>
 
                 <div className="flex-1 flex justify-end items-center">

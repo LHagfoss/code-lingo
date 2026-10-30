@@ -1,8 +1,8 @@
 "use server";
 
-import { getAuthUser } from "@/queries/user/users";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { getAuthUser } from "@/queries/user/users";
 import { optionSchema } from "@/schemas/lessons";
 
 // Validation Schema
@@ -26,7 +26,7 @@ async function ensureAdmin() {
 
 export async function createOptionAction(
     exerciseId: string,
-    prevState: any,
+    _prevState: any,
     formData: FormData,
 ) {
     try {
@@ -73,7 +73,7 @@ export async function createOptionAction(
                 success: false,
             };
         }
-    } catch (error) {
+    } catch (_error) {
         return { message: "Unauthorized or Server Error", success: false };
     }
 

@@ -1,9 +1,10 @@
 "use server";
 
-import { getAuthUser } from "@/queries/user/users";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getAuthUser } from "@/queries/user/users";
+import { uploadImage } from "@/utils/supabase/storage";
 
 function getAdminClient() {
     return createClient(
@@ -12,26 +13,42 @@ function getAdminClient() {
     );
 }
 
-export async function updateUserNameAction(formData: FormData) {
+export async function updateProfileAction(_prevState: any, formData: FormData) {
     const user = await getAuthUser();
-    if (!user) throw new Error("Not authenticated");
+    if (!user) return { message: "Not authenticated", success: false };
 
-    const newName = formData.get("name") as string;
+    const name = formData.get("name") as string;
+    const imageFile = formData.get("image") as File;
+
+    if (!name || name.trim().length < 2) {
+        return {
+            message: "Name must be at least 2 characters",
+            success: false,
+        };
+    }
 
     const supabase = getAdminClient();
 
+    const updates: any = { name };
+
+    if (imageFile && imageFile.size > 0) {
+        const path = `${user.id}-${Date.now()}.${imageFile.name.split(".").pop()}`;
+        updates.image = await uploadImage(imageFile, "avatars", path);
+    }
+
     const { error } = await supabase
         .from("users")
-        .update({ name: newName })
+        .update(updates)
         .eq("id", user.id);
 
     if (error) {
         console.error("Update failed:", error);
-        throw new Error("Update failed");
+        return { message: "Failed to update profile", success: false };
     }
 
-    revalidatePath("/");
-    return { success: true };
+    revalidatePath("/profile");
+    revalidatePath("/learn");
+    return { message: "Profile updated!", success: true };
 }
 
 export async function updateUserActiveCourse(courseId: number) {

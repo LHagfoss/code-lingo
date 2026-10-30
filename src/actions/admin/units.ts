@@ -1,8 +1,8 @@
 "use server";
 
-import { getAuthUser } from "@/queries/user/users";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { getAuthUser } from "@/queries/user/users";
 import { unitSchema } from "@/schemas/courses";
 
 // Validation Schema
@@ -26,7 +26,7 @@ async function ensureAdmin() {
 
 export async function createUnitAction(
     courseId: string,
-    prevState: any,
+    _prevState: any,
     formData: FormData,
 ) {
     try {
@@ -81,7 +81,7 @@ export async function createUnitAction(
                 success: false,
             };
         }
-    } catch (error) {
+    } catch (_error) {
         return { message: "Unauthorized or Server Error", success: false };
     }
 
@@ -131,15 +131,22 @@ export async function moveUnitAction(
         const currentOrder = currentUnit.order;
 
         // 2. Find neighbor
-        const { data: neighborUnit } = await supabase
+        let query = supabase
             .from("units")
             .select("id, order")
-            .eq("course_id", courseId)
-            .eq(
-                "order",
-                direction === "up" ? currentOrder - 1 : currentOrder + 1,
-            )
-            .single();
+            .eq("course_id", courseId);
+
+        if (direction === "up") {
+            query = query
+                .lt("order", currentOrder)
+                .order("order", { ascending: false });
+        } else {
+            query = query
+                .gt("order", currentOrder)
+                .order("order", { ascending: true });
+        }
+
+        const { data: neighborUnit } = await query.limit(1).single();
 
         if (neighborUnit) {
             // 3. Swap (Use a temp value to avoid unique constraint if strict, but standard update usually works if not deferred.

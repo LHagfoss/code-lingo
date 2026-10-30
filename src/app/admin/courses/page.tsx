@@ -1,12 +1,13 @@
-import { auth } from "@/auth";
-import { getAuthUser } from "@/queries/user/users";
-import { getCourses } from "@/queries/user/courses";
-import { redirect } from "next/navigation";
-import { AppButton } from "@/components/ui/app-button";
-import { Card } from "@/components/ui/card";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import { deleteCourseAction } from "@/actions/admin/courses";
+import { auth } from "@/auth";
+import { AppButton } from "@/components/ui/app-button";
+import { AppText } from "@/components/ui/app-text";
+import { Card } from "@/components/ui/card";
 import { PageWrapper } from "@/components/ui/page-wrapper";
+import { getCourses } from "@/queries/user/courses";
+import { getAuthUser } from "@/queries/user/users";
 
 export default async function AdminCoursesPage() {
     const session = await auth();
@@ -31,10 +32,10 @@ export default async function AdminCoursesPage() {
                     </AppButton>
                 </div>
 
-                <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid lg:grid-cols-2 xl:grid-cols-2 gap-4">
                     {courses.map((course: any) => (
-                        <Card key={course.id} className="flex flex-col gap-4">
-                            <div className="relative w-full h-32 bg-slate-100 rounded-lg flex items-center justify-center overflow-hidden">
+                        <Card key={course.id} className="flex gap-4">
+                            <div className="flex-1 relative bg-slate-200 rounded-lg h-48 flex items-center justify-center overflow-hidden">
                                 {course.image_src ? (
                                     <Image
                                         src={course.image_src}
@@ -44,44 +45,45 @@ export default async function AdminCoursesPage() {
                                         className="object-contain"
                                     />
                                 ) : (
-                                    <span className="text-4xl">📚</span>
+                                    <span className="text-4xl">No image📚</span>
                                 )}
                             </div>
 
-                            <div className="flex-1">
-                                <h2 className="text-xl font-bold text-slate-800">
-                                    {course.title}
-                                </h2>
-                                <p className="text-xs text-slate-400 font-bold uppercase mt-1">
-                                    Slug: {course.slug}
-                                </p>
-                            </div>
+                            <div className="flex-1 flex flex-col justify-between">
+                                <div className="flex-1">
+                                    <AppText size="2xl">{course.title}</AppText>
+                                    <AppText size="sm" className="">
+                                        {course.slug}
+                                    </AppText>
+                                </div>
 
-                            <div className="flex gap-2 mt-auto pt-4 border-t border-slate-100">
-                                {/* In a real app we'd link to an edit page */}
-                                <AppButton
-                                    href={`/admin/courses/${course.id}`}
-                                    variant="secondary"
-                                    size="sm"
-                                    className="flex-1"
-                                >
-                                    Edit
-                                </AppButton>
-
-                                <form
-                                    action={deleteCourseAction.bind(
-                                        null,
-                                        course.id,
-                                    )}
-                                >
+                                <div className="flex gap-2">
                                     <AppButton
-                                        variant="danger"
+                                        href={`/admin/courses/${course.id}`}
+                                        variant="secondary"
                                         size="sm"
-                                        type="submit"
+                                        fullWidth
                                     >
-                                        Delete
+                                        Edit
                                     </AppButton>
-                                </form>
+
+                                    <form
+                                        className="w-full"
+                                        action={deleteCourseAction.bind(
+                                            null,
+                                            course.id,
+                                        )}
+                                    >
+                                        <AppButton
+                                            variant="danger"
+                                            size="sm"
+                                            type="submit"
+                                            fullWidth
+                                        >
+                                            Delete
+                                        </AppButton>
+                                    </form>
+                                </div>
                             </div>
                         </Card>
                     ))}

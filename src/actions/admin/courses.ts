@@ -1,13 +1,10 @@
 "use server";
 
-import { getAuthUser } from "@/queries/user/users";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { courseSchema } from "@/schemas/courses";
-
-// Validation Schema
-// Removed local schema definition
+import { getAuthUser } from "@/queries/user/users";
+import { uploadImage } from "@/utils/supabase/storage";
 
 function getAdminClient() {
     return createClient(
@@ -25,32 +22,32 @@ async function ensureAdmin() {
     return user;
 }
 
-export async function createCourseAction(prevState: any, formData: FormData) {
+export async function createCourseAction(_prevState: any, formData: FormData) {
     try {
         await ensureAdmin();
 
-        const rawData = {
-            title: formData.get("title"),
-            image_src: formData.get("image_src"),
-        };
+        const title = formData.get("title") as string;
+        const imageFile = formData.get("image") as File;
 
-        const validatedFields = courseSchema.safeParse(rawData);
-
-        if (!validatedFields.success) {
-            return {
-                errors: validatedFields.error.flatten().fieldErrors,
-                message: "Please fix the errors below.",
-            };
+        if (!title || title.length < 3) {
+            return { message: "Title must be at least 3 chars." };
         }
 
-        const { title, image_src } = validatedFields.data;
-        const supabase = getAdminClient();
-
-        // Generate a simple slug from title
+        // Generate slug
         const slug = title
             .toLowerCase()
             .replace(/ /g, "-")
             .replace(/[^\w-]+/g, "");
+
+        let image_src = "";
+        if (imageFile && imageFile.size > 0) {
+            const path = `${slug}-${Date.now()}.${imageFile.name
+                .split(".")
+                .pop()}`;
+            image_src = await uploadImage(imageFile, "courses", path);
+        }
+
+        const supabase = getAdminClient();
 
         const { error } = await supabase.from("courses").insert({
             title,
@@ -62,7 +59,7 @@ export async function createCourseAction(prevState: any, formData: FormData) {
             console.error("Create Course Error:", error);
             return { message: "Database Error: Failed to create course." };
         }
-    } catch (error) {
+    } catch (_error) {
         return { message: "Unauthorized or Server Error" };
     }
 
@@ -96,33 +93,44 @@ export async function deleteCourseAction(courseId: string) {
 
 export async function updateCourseAction(
     courseId: string,
-    prevState: any,
+    _prevState: any,
     formData: FormData,
 ) {
     try {
         await ensureAdmin();
 
-        const rawData = {
-            title: formData.get("title"),
-            image_src: formData.get("image_src"),
-        };
+        const title = formData.get("title") as string;
+        const imageFile = formData.get("image") as File;
 
-        const validatedFields = courseSchema.safeParse(rawData);
-
-        if (!validatedFields.success) {
+        if (!title || title.length < 3) {
             return {
-                errors: validatedFields.error.flatten().fieldErrors,
-                message: "Please fix the errors below.",
+                message: "Title must be at least 3 chars.",
                 success: false,
             };
         }
 
-        const { title, image_src } = validatedFields.data;
         const supabase = getAdminClient();
+
+        // Prepare update object
+        const updates: any = { title };
+
+        if (imageFile && imageFile.size > 0) {
+            const slug = title
+                .toLowerCase()
+                .replace(/ /g, "-")
+                .replace(/[^\w-]+/g, "");
+            const path = `${slug}-${Date.now()}.${imageFile.name
+                .split(".")
+                .pop()}`;
+            updates.image_src = await uploadImage(imageFile, "courses", path);
+        } else if (formData.get("image_src")) {
+            // Fallback if they somehow sent a text url (backward compatibility)
+            updates.image_src = formData.get("image_src");
+        }
 
         const { error } = await supabase
             .from("courses")
-            .update({ title, image_src })
+            .update(updates)
             .eq("id", courseId);
 
         if (error) {
@@ -132,7 +140,7 @@ export async function updateCourseAction(
                 success: false,
             };
         }
-    } catch (error) {
+    } catch (_error) {
         return { message: "Unauthorized or Server Error", success: false };
     }
 

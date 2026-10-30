@@ -1,18 +1,22 @@
 "use server";
 
-import { getAuthUser } from "@/queries/user/users";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { getAuthUser } from "@/queries/user/users";
 import { exerciseSchema } from "@/schemas/lessons";
 
 // Validation Schema
 // Removed local schema
 
 function getAdminClient() {
-    return createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+        throw new Error("Missing Supabase environment variables");
+    }
+
+    return createClient(supabaseUrl, supabaseServiceRoleKey);
 }
 
 // Helper to ensure admin access
@@ -26,7 +30,7 @@ async function ensureAdmin() {
 
 export async function createExerciseAction(
     lessonId: string,
-    prevState: any,
+    _prevState: unknown,
     formData: FormData,
 ) {
     try {
@@ -63,7 +67,7 @@ export async function createExerciseAction(
                 success: false,
             };
         }
-    } catch (error) {
+    } catch (_error) {
         return { message: "Unauthorized or Server Error", success: false };
     }
 

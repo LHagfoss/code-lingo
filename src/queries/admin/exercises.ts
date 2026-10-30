@@ -1,5 +1,5 @@
-import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
+import { createClient } from "@/utils/supabase/server";
 
 export const getExerciseWithOptions = cache(async (exerciseId: string) => {
     const supabase = await createClient();

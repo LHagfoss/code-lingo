@@ -1,6 +1,6 @@
-import { Card } from "@/components/ui/card";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { AppText } from "@/components/ui/app-text";
+import { Card } from "@/components/ui/card";
 
 interface AdminItemCardProps {
     title: string;
@@ -22,7 +22,11 @@ export function AdminItemCard({
             <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
                     {order !== undefined && (
-                        <AppText size="xs" variant="secondary" className="bg-slate-100 px-2 py-1 rounded uppercase shrink-0">
+                        <AppText
+                            size="xs"
+                            variant="secondary"
+                            className="bg-slate-100 px-2 py-1 rounded uppercase shrink-0"
+                        >
                             Order {order}
                         </AppText>
                     )}
@@ -31,7 +35,9 @@ export function AdminItemCard({
                     </AppText>
                 </div>
                 {subtitle && (
-                    <AppText size="sm" variant="secondary">{subtitle}</AppText>
+                    <AppText size="sm" variant="secondary">
+                        {subtitle}
+                    </AppText>
                 )}
                 {children}
             </div>

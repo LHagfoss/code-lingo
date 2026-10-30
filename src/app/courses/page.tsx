@@ -1,14 +1,13 @@
-import { auth } from "@/auth";
-import { getCourses } from "@/queries/user/courses";
-import { getAuthUser } from "@/queries/user/users";
-import { updateUserActiveCourse } from "@/actions/user/account";
-import { AppButton } from "@/components/ui/app-button";
-import { redirect } from "next/navigation";
 import Image from "next/image";
-
+import { redirect } from "next/navigation";
+import { updateUserActiveCourse } from "@/actions/user/account";
+import { auth } from "@/auth";
+import { AppButton } from "@/components/ui/app-button";
+import { AppText } from "@/components/ui/app-text";
 import { Card } from "@/components/ui/card";
 import { PageWrapper } from "@/components/ui/page-wrapper";
-import { AppText } from "@/components/ui/app-text";
+import { getCourses } from "@/queries/user/courses";
+import { getAuthUser } from "@/queries/user/users";
 
 export default async function CoursesPage() {
     const session = await auth();
@@ -21,57 +20,83 @@ export default async function CoursesPage() {
 
     return (
         <PageWrapper>
-            <div className="space-y-8">
-                <AppText as="h1" size="3xl" className="text-gray-800">
+            <div className="space-y-8 mx-auto">
+                <h1 className="text-3xl font-bold text-slate-700">
                     Language Courses
-                </AppText>
+                </h1>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid lg:grid-cols-2 xl:grid-cols-2 gap-4">
                     {courses.map((course: any) => {
                         const isActive = user?.active_course_id === course.id;
 
                         return (
                             <Card
                                 key={course.id}
-                                className={`flex flex-col items-center gap-4 p-6 min-h-[200px] cursor-pointer hover:bg-slate-50 transition-colors ${
+                                className={`flex gap-4 ${
                                     isActive
-                                        ? "border-blue-500 bg-blue-50 hover:bg-blue-50 ring-2 ring-blue-200"
+                                        ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
                                         : ""
                                 }`}
                             >
-                                <Image
-                                    width={128}
-                                    height={128}
-                                    src={course.image_src}
-                                    alt={course.title}
-                                    className="w-24 h-24 object-contain"
-                                />
-                                <AppText as="h2" size="xl">
-                                    {course.title}
-                                </AppText>
-
-                                <form
-                                    action={updateUserActiveCourse.bind(
-                                        null,
-                                        course.id,
+                                <div className="flex-1 relative bg-slate-200 rounded-lg h-48 flex items-center justify-center overflow-hidden">
+                                    {course.image_src ? (
+                                        <Image
+                                            src={course.image_src}
+                                            alt={course.title}
+                                            width={100}
+                                            height={100}
+                                            className="object-contain"
+                                        />
+                                    ) : (
+                                        <span className="text-4xl">
+                                            No image📚
+                                        </span>
                                     )}
-                                    className="w-full mt-auto"
-                                >
-                                    <AppButton
-                                        variant={
-                                            isActive ? "secondary" : "primary"
-                                        }
-                                        disabled={isActive}
-                                        fullWidth
+                                </div>
+
+                                <div className="flex-1 flex flex-col justify-between">
+                                    <div className="flex-1">
+                                        <AppText size="2xl">
+                                            {course.title}
+                                        </AppText>
+                                    </div>
+
+                                    <form
+                                        action={updateUserActiveCourse.bind(
+                                            null,
+                                            course.id,
+                                        )}
+                                        className="w-full"
                                     >
-                                        {isActive
-                                            ? "Currently Learning"
-                                            : "Switch Course"}
-                                    </AppButton>
-                                </form>
+                                        <AppButton
+                                            variant={
+                                                isActive
+                                                    ? "secondary"
+                                                    : "primary"
+                                            }
+                                            disabled={isActive}
+                                            size="sm"
+                                            type="submit"
+                                            fullWidth
+                                        >
+                                            {isActive
+                                                ? "Currently Learning"
+                                                : "Switch Course"}
+                                        </AppButton>
+                                    </form>
+                                </div>
                             </Card>
                         );
                     })}
+
+                    {courses.length === 0 && (
+                        <div className="col-span-full py-12 text-center text-slate-400">
+                            <p className="text-xl font-bold">
+                                No courses found.
+                            </p>
+                            <p>Create one to get started!</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </PageWrapper>

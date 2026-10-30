@@ -1,6 +1,6 @@
-import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
 import { getAuthUser } from "@/queries/user/users";
+import { createClient } from "@/utils/supabase/server";
 
 export const getCourseById = cache(async (id: number) => {
     const supabase = await createClient();

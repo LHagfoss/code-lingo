@@ -1,7 +1,7 @@
 import { FaGoogle } from "react-icons/fa";
 import { signIn } from "@/auth";
-import AppLogo from "@/components/app-logo";
 import { AppButton } from "@/components/ui/app-button";
+import AppLogo from "@/components/ui/app-logo";
 import { PageWrapper } from "@/components/ui/page-wrapper";
 
 export default function LoginPage() {
@@ -41,7 +41,10 @@ export default function LoginPage() {
                     </form>
 
                     <div className="text-center">
-                        <a className="font-bold text-neutral-400 text-sm cursor-pointer hover:underline">
+                        <a
+                            href="/"
+                            className="font-bold text-neutral-400 text-sm cursor-pointer hover:underline"
+                        >
                             Privacy policy
                         </a>
                     </div>

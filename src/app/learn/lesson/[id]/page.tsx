@@ -1,8 +1,8 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import { getAdminClient } from "@/queries/user/progress";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import { QuizCore } from "@/components/quiz/quiz-core";
+import { getAdminClient } from "@/queries/user/progress";
 
 export default async function LessonPage({
     params,
@@ -13,7 +13,7 @@ export default async function LessonPage({
     if (!session?.user) redirect("/api/auth/signin");
 
     const { id } = await params;
-    const lessonId = parseInt(id);
+    const lessonId = parseInt(id, 10);
 
     const supabase = getAdminClient();
     const { data: lesson } = await supabase

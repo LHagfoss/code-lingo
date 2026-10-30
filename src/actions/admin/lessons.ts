@@ -1,15 +1,19 @@
 "use server";
 
-import { getAuthUser } from "@/queries/user/users";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { getAuthUser } from "@/queries/user/users";
 import { lessonSchema } from "@/schemas/lessons";
 
 function getAdminClient() {
-    return createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+        throw new Error("Missing Supabase environment variables");
+    }
+
+    return createClient(supabaseUrl, supabaseServiceRoleKey);
 }
 
 async function ensureAdmin() {
@@ -22,7 +26,7 @@ async function ensureAdmin() {
 
 export async function createLessonAction(
     unitId: string,
-    prevState: any,
+    _prevState: unknown,
     formData: FormData,
 ) {
     try {
@@ -75,7 +79,7 @@ export async function createLessonAction(
                 success: false,
             };
         }
-    } catch (error) {
+    } catch (_error) {
         return { message: "Unauthorized or Server Error", success: false };
     }
 
@@ -123,25 +127,38 @@ export async function moveLessonAction(
 
         const currentOrder = currentLesson.order;
 
-        const { data: neighborLesson } = await supabase
+        let query = supabase
             .from("lessons")
             .select("id, order")
-            .eq("unit_id", unitId)
-            .eq(
-                "order",
-                direction === "up" ? currentOrder - 1 : currentOrder + 1,
-            )
-            .single();
+            .eq("unit_id", unitId);
+
+        if (direction === "up") {
+            query = query
+                .lt("order", currentOrder)
+                .order("order", { ascending: false });
+        } else {
+            query = query
+                .gt("order", currentOrder)
+                .order("order", { ascending: true });
+        }
+
+        const { data: neighborLesson } = await query.limit(1).single();
 
         if (neighborLesson) {
+            // Swap orders
+            // 1. Set neighbor to temp (-1)
             await supabase
                 .from("lessons")
                 .update({ order: -1 })
                 .eq("id", neighborLesson.id);
+
+            // 2. Set current to neighbor's old order
             await supabase
                 .from("lessons")
                 .update({ order: neighborLesson.order })
                 .eq("id", lessonId);
+
+            // 3. Set neighbor (from temp) to current's old order
             await supabase
                 .from("lessons")
                 .update({ order: currentOrder })
