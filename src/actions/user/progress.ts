@@ -1,8 +1,8 @@
 "use server";
 
-import { getAuthUser } from "@/queries/user/users";
-import { upsertUserProgress } from "@/queries/user/progress";
 import { revalidatePath } from "next/cache";
+import { upsertUserProgress } from "@/queries/user/progress";
+import { getAuthUser } from "@/queries/user/users";
 
 export type ActionState = {
     message: string;
@@ -15,8 +15,8 @@ export type ActionState = {
  */
 export async function completeLessonAction(
     lessonId: number,
-    prevState: ActionState,
-    formData: FormData,
+    _prevState: ActionState,
+    _formData: FormData,
 ): Promise<ActionState> {
     const user = await getAuthUser();
 

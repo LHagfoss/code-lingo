@@ -1,6 +1,6 @@
-import { createClient } from "@/utils/supabase/server";
-import { auth } from "@/auth";
 import { cache } from "react";
+import { auth } from "@/auth";
+import { createClient } from "@/utils/supabase/server";
 
 export const getUser = cache(async (email: string) => {
     const supabase = await createClient();

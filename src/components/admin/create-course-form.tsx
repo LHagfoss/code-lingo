@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 
 const initialState = {
     message: "",
-    errors: {},
 };
 
 export function CreateCourseForm() {
@@ -33,36 +32,25 @@ export function CreateCourseForm() {
                         placeholder="e.g. French"
                         className="w-full border-2 border-b-4 border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500 transition font-bold text-slate-700"
                     />
-                    {state?.errors?.title && (
-                        <p className="text-red-500 text-sm mt-1">
-                            {state.errors.title}
-                        </p>
-                    )}
                 </div>
 
                 <div>
                     <label
-                        htmlFor="image_src"
+                        htmlFor="image"
                         className="block text-sm font-bold text-slate-700 mb-2"
                     >
-                        Image URL
+                        Course Image
                     </label>
                     <input
-                        type="text"
-                        id="image_src"
-                        name="image_src"
-                        placeholder="e.g. /courses/french.png or https://..."
-                        className="w-full border-2 border-b-4 border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500 transition font-bold text-slate-700"
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        className="w-full border-2 border-b-4 border-slate-200 rounded-xl p-3 outline-none focus:border-blue-500 transition font-bold text-slate-700 bg-white"
                     />
                     <p className="text-xs text-slate-400 mt-1">
-                        For now, you can use: /courses/python.png or
-                        /courses/javascript.png
+                        Upload a PNG or JPG image.
                     </p>
-                    {state?.errors?.image_src && (
-                        <p className="text-red-500 text-sm mt-1">
-                            {state.errors.image_src}
-                        </p>
-                    )}
                 </div>
 
                 {state?.message && (

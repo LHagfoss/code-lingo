@@ -1,17 +1,17 @@
-import { auth } from "@/auth";
-import { getAuthUser } from "@/queries/user/users";
-import { getUnitWithLessons } from "@/queries/admin/units";
-import { getNextLessonOrder } from "@/queries/admin/lessons";
 import { redirect } from "next/navigation";
-import { AppButton } from "@/components/ui/app-button";
-import { AddLessonForm } from "@/components/admin/add-lesson-form";
 import { deleteLessonAction, moveLessonAction } from "@/actions/admin/lessons";
-import { PageWrapper } from "@/components/ui/page-wrapper";
-import Separator from "@/components/separator";
+import { auth } from "@/auth";
+import { AddLessonForm } from "@/components/admin/add-lesson-form";
 import { AdminHeader } from "@/components/admin/ui/admin-header";
-import { AdminSection } from "@/components/admin/ui/admin-section";
-import { AdminList } from "@/components/admin/ui/admin-list";
 import { AdminItemCard } from "@/components/admin/ui/admin-item-card";
+import { AdminList } from "@/components/admin/ui/admin-list";
+import { AdminSection } from "@/components/admin/ui/admin-section";
+import Separator from "@/components/separator";
+import { AppButton } from "@/components/ui/app-button";
+import { PageWrapper } from "@/components/ui/page-wrapper";
+import { getNextLessonOrder } from "@/queries/admin/lessons";
+import { getUnitWithLessons } from "@/queries/admin/units";
+import { getAuthUser } from "@/queries/user/users";
 
 export default async function UnitAdminPage(props: {
     params: Promise<{ id: string }>;
@@ -64,13 +64,15 @@ export default async function UnitAdminPage(props: {
                                                     "up",
                                                 )}
                                             >
-                                                <button
+                                                <AppButton
+                                                    variant="ghost"
+                                                    size="sm"
                                                     type="submit"
                                                     disabled={index === 0}
-                                                    className="p-1 hover:bg-slate-100 rounded text-slate-500 disabled:opacity-30"
+                                                    className="w-8 h-8 p-0"
                                                 >
                                                     ▲
-                                                </button>
+                                                </AppButton>
                                             </form>
                                             <form
                                                 action={moveLessonAction.bind(
@@ -80,16 +82,18 @@ export default async function UnitAdminPage(props: {
                                                     "down",
                                                 )}
                                             >
-                                                <button
+                                                <AppButton
+                                                    variant="ghost"
+                                                    size="sm"
                                                     type="submit"
                                                     disabled={
                                                         index ===
                                                         unit.lessons.length - 1
                                                     }
-                                                    className="p-1 hover:bg-slate-100 rounded text-slate-500 disabled:opacity-30"
+                                                    className="w-8 h-8 p-0"
                                                 >
                                                     ▼
-                                                </button>
+                                                </AppButton>
                                             </form>
                                         </div>
 

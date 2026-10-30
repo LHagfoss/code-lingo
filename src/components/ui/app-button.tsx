@@ -35,7 +35,6 @@ export function AppButton({
         secondary:
             "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 active:border-slate-200",
         danger: "bg-rose-500 text-white border-rose-600 hover:bg-rose-400 active:border-rose-600",
-        // Adapting others to match the new system
         success:
             "bg-green-500 text-white border-green-600 hover:bg-green-400 active:border-green-600",
         super: "bg-yellow-400 text-yellow-900 border-yellow-500 hover:bg-yellow-300 active:border-yellow-500",

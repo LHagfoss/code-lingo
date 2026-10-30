@@ -20,9 +20,13 @@ export function AdminHeader({
     return (
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
-                <AppText as="h1" size="3xl" variant="primary">{title}</AppText>
+                <AppText as="h1" size="3xl" variant="primary">
+                    {title}
+                </AppText>
                 {subtitle && (
-                    <AppText variant="secondary" className="mt-1">{subtitle}</AppText>
+                    <AppText variant="secondary" className="mt-1">
+                        {subtitle}
+                    </AppText>
                 )}
             </div>
             <div className="flex items-center gap-3 ml-auto">

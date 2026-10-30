@@ -1,16 +1,16 @@
-import { auth } from "@/auth";
-import { getAuthUser } from "@/queries/user/users";
-import { getCourseWithUnits, getNextUnitOrder } from "@/queries/admin/courses";
 import { redirect } from "next/navigation";
-import { AppButton } from "@/components/ui/app-button";
-import { AddUnitForm } from "@/components/admin/add-unit-form";
 import { deleteUnitAction, moveUnitAction } from "@/actions/admin/units";
-import { PageWrapper } from "@/components/ui/page-wrapper";
+import { auth } from "@/auth";
+import { AddUnitForm } from "@/components/admin/add-unit-form";
 import { EditCourseForm } from "@/components/admin/edit-course-form";
-import Separator from "@/components/separator";
-import { AdminSection } from "@/components/admin/ui/admin-section";
-import { AdminList } from "@/components/admin/ui/admin-list";
 import { AdminItemCard } from "@/components/admin/ui/admin-item-card";
+import { AdminList } from "@/components/admin/ui/admin-list";
+import { AdminSection } from "@/components/admin/ui/admin-section";
+import Separator from "@/components/separator";
+import { AppButton } from "@/components/ui/app-button";
+import { PageWrapper } from "@/components/ui/page-wrapper";
+import { getCourseWithUnits, getNextUnitOrder } from "@/queries/admin/courses";
+import { getAuthUser } from "@/queries/user/users";
 
 export default async function CourseAdminPage(props: {
     params: Promise<{ id: string }>;
@@ -59,13 +59,15 @@ export default async function CourseAdminPage(props: {
                                                     "up",
                                                 )}
                                             >
-                                                <button
+                                                <AppButton
+                                                    variant="ghost"
+                                                    size="sm"
                                                     type="submit"
                                                     disabled={index === 0}
-                                                    className="p-1 hover:bg-slate-100 rounded text-slate-500 disabled:opacity-30"
+                                                    className="w-8 h-8 p-0"
                                                 >
                                                     ▲
-                                                </button>
+                                                </AppButton>
                                             </form>
                                             <form
                                                 action={moveUnitAction.bind(
@@ -75,16 +77,18 @@ export default async function CourseAdminPage(props: {
                                                     "down",
                                                 )}
                                             >
-                                                <button
+                                                <AppButton
+                                                    variant="ghost"
+                                                    size="sm"
                                                     type="submit"
                                                     disabled={
                                                         index ===
                                                         course.units.length - 1
                                                     }
-                                                    className="p-1 hover:bg-slate-100 rounded text-slate-500 disabled:opacity-30"
+                                                    className="w-8 h-8 p-0"
                                                 >
                                                     ▼
-                                                </button>
+                                                </AppButton>
                                             </form>
                                         </div>
 

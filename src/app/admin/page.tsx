@@ -1,9 +1,10 @@
-import Link from "next/link";
-import { auth } from "@/auth";
-import { getAuthUser } from "@/queries/user/users";
 import { redirect } from "next/navigation";
+import { BiUser } from "react-icons/bi";
+import { auth } from "@/auth";
+import { AppButton } from "@/components/ui/app-button";
 import { Card } from "@/components/ui/card";
 import { PageWrapper } from "@/components/ui/page-wrapper";
+import { getAuthUser } from "@/queries/user/users";
 
 export default async function AdminPage() {
     const session = await auth();
@@ -17,39 +18,52 @@ export default async function AdminPage() {
 
     return (
         <PageWrapper>
-            <div className={"max-w-lg mx-auto flex flex-col gap-2"}>
-                <Card>
+            <div className={"mx-auto flex flex-col gap-6"}>
+                <div className="">
                     <h1 className="text-3xl font-bold text-slate-700">
                         Admin Dashboard
                     </h1>
                     <p className="text-slate-500">
                         This is the admin dashboard page.
                     </p>
-                </Card>
+                </div>
 
-                <Card className="flex flex-col gap-2">
-                    <h2 className="text-xl font-bold">Users</h2>
-                    <p className="text-slate-500">Manage registered users.</p>
-                </Card>
+                <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <Card className="flex flex-col gap-2">
+                        <div className="bg-blue-100 text-blue-400 h-12 w-12 flex items-center justify-center rounded-md">
+                            <BiUser color="inherit" size={32} />
+                        </div>
 
-                <Link
-                    href="/admin/courses"
-                    className="block transition-transform hover:scale-105 active:scale-95"
-                >
-                    <Card className="flex flex-col gap-2 h-full border-blue-200 bg-blue-50 hover:bg-blue-100 cursor-pointer">
+                        <h2 className="text-xl font-bold">Users</h2>
+                        <p className="text-slate-500">
+                            Manage registered users.
+                        </p>
+                    </Card>
+
+                    <Card className="flex flex-col gap-2 h-full ">
+                        <div className="bg-blue-100 text-blue-400 h-12 w-12 flex items-center justify-center rounded-md">
+                            <BiUser color="inherit" size={32} />
+                        </div>
+
                         <h2 className="text-xl font-bold text-blue-700">
                             Courses
                         </h2>
                         <p className="text-slate-600 font-bold">
-                            Manage course content →
+                            Manage course content
                         </p>
-                    </Card>
-                </Link>
 
-                <Card className="flex flex-col gap-2">
-                    <h2 className="text-xl font-bold">Analytics</h2>
-                    <p className="text-slate-500">View platform stats.</p>
-                </Card>
+                        <AppButton href="/admin/courses">Go to</AppButton>
+                    </Card>
+
+                    <Card className="flex flex-col gap-2">
+                        <div className="bg-blue-100 text-blue-400 h-12 w-12 flex items-center justify-center rounded-md">
+                            <BiUser color="inherit" size={32} />
+                        </div>
+
+                        <h2 className="text-xl font-bold">Analytics</h2>
+                        <p className="text-slate-500">View platform stats.</p>
+                    </Card>
+                </div>
             </div>
         </PageWrapper>
     );

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { AppButton } from "@/components/ui/app-button";
-import { saveQuizProgress } from "@/actions/user/progress";
 import { useRouter } from "next/navigation";
+import { Activity, useEffect, useState } from "react";
+import { saveQuizProgress } from "@/actions/user/progress";
+import { AppButton } from "@/components/ui/app-button";
 
 type Option = {
     id: number;
@@ -136,6 +136,7 @@ export function QuizCore({ lessonId, initialExercises }: QuizCoreProps) {
                 return (
                     <button
                         key={option.id}
+                        type="button"
                         onClick={() =>
                             status === "idle" && setSelectedOptionId(option.id)
                         }
@@ -161,6 +162,7 @@ export function QuizCore({ lessonId, initialExercises }: QuizCoreProps) {
                 {solutionOptions.map((option) => (
                     <button
                         key={option.id}
+                        type="button"
                         onClick={() => onOptionClick(option, "solution")}
                         disabled={status !== "idle"}
                         className="block w-full text-left p-3 bg-white border-2 border-b-4 border-slate-200 rounded-lg font-mono text-sm md:text-base shadow-sm hover:border-slate-300 active:border-b-2 active:translate-y-[2px] transition-all"
@@ -178,6 +180,7 @@ export function QuizCore({ lessonId, initialExercises }: QuizCoreProps) {
                 {availableOptions.map((option) => (
                     <button
                         key={option.id}
+                        type="button"
                         onClick={() => onOptionClick(option, "bank")}
                         disabled={status !== "idle"}
                         className="block w-full text-left p-3 bg-white border-2 border-b-4 border-slate-200 rounded-lg font-mono text-sm md:text-base shadow-sm hover:border-blue-300 hover:bg-blue-50 active:border-b-2 active:translate-y-[2px] transition-all"
@@ -216,9 +219,24 @@ export function QuizCore({ lessonId, initialExercises }: QuizCoreProps) {
                     {currentExercise.question}
                 </h2>
 
-                {currentExercise.type === "CODE_ARRANGE"
-                    ? renderCodeArrange()
-                    : renderSelect()}
+                <Activity
+                    mode={
+                        currentExercise.type === "CODE_ARRANGE"
+                            ? "visible"
+                            : "hidden"
+                    }
+                >
+                    {renderCodeArrange()}
+                </Activity>
+                <Activity
+                    mode={
+                        currentExercise.type !== "CODE_ARRANGE"
+                            ? "visible"
+                            : "hidden"
+                    }
+                >
+                    {renderSelect()}
+                </Activity>
             </div>
 
             <div

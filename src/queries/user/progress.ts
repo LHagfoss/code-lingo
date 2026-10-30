@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
+import { revalidatePath } from "next/cache";
 import { cache } from "react";
 import { getAuthUser } from "@/queries/user/users";
-import { revalidatePath } from "next/cache";
 
 export function getAdminClient() {
     return createClient(

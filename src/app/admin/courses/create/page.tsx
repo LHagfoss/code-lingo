@@ -1,8 +1,8 @@
-import { auth } from "@/auth";
-import { getAuthUser } from "@/queries/user/users";
 import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import { CreateCourseForm } from "@/components/admin/create-course-form";
 import { PageWrapper } from "@/components/ui/page-wrapper";
+import { getAuthUser } from "@/queries/user/users";
 
 export default async function CreateCoursePage() {
     const session = await auth();

@@ -1,5 +1,5 @@
-import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
+import { createClient } from "@/utils/supabase/server";
 
 export const getUnitWithLessons = cache(async (unitId: string) => {
     const supabase = await createClient();
@@ -12,7 +12,7 @@ export const getUnitWithLessons = cache(async (unitId: string) => {
         .eq("id", unitId)
         .single();
 
-    if (unit && unit.lessons) {
+    if (unit?.lessons) {
         unit.lessons.sort((a: any, b: any) => a.order - b.order);
     }
 

@@ -1,14 +1,14 @@
-import { auth } from "@/auth";
-import { getAuthUser } from "@/queries/user/users";
-import { getExerciseWithOptions } from "@/queries/admin/exercises";
 import { redirect } from "next/navigation";
+import { deleteOptionAction } from "@/actions/admin/options";
+import { auth } from "@/auth";
+import { AddOptionForm } from "@/components/admin/add-option-form";
+import Separator from "@/components/separator";
 import { AppButton } from "@/components/ui/app-button";
 import { Card } from "@/components/ui/card";
-import { AddOptionForm } from "@/components/admin/add-option-form";
-import { deleteOptionAction } from "@/actions/admin/options";
-import { cn } from "@/utils/cn";
 import { PageWrapper } from "@/components/ui/page-wrapper";
-import Separator from "@/components/separator";
+import { getExerciseWithOptions } from "@/queries/admin/exercises";
+import { getAuthUser } from "@/queries/user/users";
+import { cn } from "@/utils/cn";
 
 export default async function ExerciseAdminPage(props: {
     params: Promise<{ id: string }>;

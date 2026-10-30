@@ -1,10 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useActionState, useState } from "react";
 import { completeOnboardingAction } from "@/actions/onboarding";
 import { AppButton } from "@/components/ui/app-button";
 import { Card } from "@/components/ui/card";
-import Image from "next/image";
 
 type Course = {
     id: string;
@@ -57,29 +57,28 @@ export function OnboardingForm({
                     )}
                 </div>
 
-                <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                <fieldset className="space-y-2">
+                    <legend className="block text-sm font-bold text-gray-700 mb-2">
                         Choose a Course
-                    </label>
-                    <input
-                        type="hidden"
-                        name="courseId"
-                        value={selectedCourse || ""}
-                    />
-
+                    </legend>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {courses.map((course) => (
-                            <div
+                            <label
                                 key={course.id}
-                                onClick={() => setSelectedCourse(course.id)}
-                                className={`cursor-pointer transition-all ${
-                                    selectedCourse === course.id
-                                        ? "transform scale-105"
-                                        : "hover:scale-102"
-                                }`}
+                                className="cursor-pointer transition-all"
                             >
+                                <input
+                                    type="radio"
+                                    name="courseId"
+                                    value={course.id}
+                                    checked={selectedCourse === course.id}
+                                    onChange={() =>
+                                        setSelectedCourse(course.id)
+                                    }
+                                    className="peer sr-only"
+                                />
                                 <Card
-                                    className={`flex flex-col items-center p-4 gap-3 h-full ${
+                                    className={`flex flex-col items-center p-4 gap-3 h-full peer-focus-visible:ring-2 peer-focus-visible:ring-blue-600 ${
                                         selectedCourse === course.id
                                             ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
                                             : "hover:bg-gray-50"
@@ -90,7 +89,7 @@ export function OnboardingForm({
                                             course.image_src ||
                                             "/courses/python.png"
                                         }
-                                        alt={course.title}
+                                        alt=""
                                         width={64}
                                         height={64}
                                         className="object-contain"
@@ -99,7 +98,7 @@ export function OnboardingForm({
                                         {course.title}
                                     </span>
                                 </Card>
-                            </div>
+                            </label>
                         ))}
                     </div>
                     {state?.errors?.courseId && (
@@ -107,7 +106,7 @@ export function OnboardingForm({
                             {state.errors.courseId}
                         </p>
                     )}
-                </div>
+                </fieldset>
             </div>
 
             {state?.message && (

@@ -1,11 +1,13 @@
-import { auth } from "@/auth";
-import { getAuthUser } from "@/queries/user/users";
-import { getUserProgress } from "@/queries/user/progress";
-import { SignOut } from "@/components/auth/sign-out";
-import { redirect } from "next/navigation";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+import { SignOut } from "@/components/auth/sign-out";
+import { EditProfileForm } from "@/components/profile/edit-profile-form";
+import { AppText } from "@/components/ui/app-text";
 import { Card } from "@/components/ui/card";
 import { PageWrapper } from "@/components/ui/page-wrapper";
+import { getUserProgress } from "@/queries/user/progress";
+import { getAuthUser } from "@/queries/user/users";
 
 export default async function ProfilePage() {
     const session = await auth();
@@ -24,51 +26,39 @@ export default async function ProfilePage() {
         <PageWrapper>
             <div className="space-y-8">
                 {/* Profile Header */}
-                <Card className="flex flex-col items-center gap-4 py-8">
-                    {session.user.image ? (
-                        <img
-                            src={session.user.image}
-                            alt="Profile"
-                            className="w-24 h-24 rounded-full border-4 border-slate-100 shadow-sm"
-                        />
-                    ) : (
-                        <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center text-3xl">
-                            👤
-                        </div>
-                    )}
-                    <div className="text-center space-y-1">
-                        <h1 className="text-2xl font-bold text-slate-700">
-                            {user?.name}
-                        </h1>
-                        <p className="text-slate-500 font-bold">
-                            {user?.email}
-                        </p>
-                    </div>
-                </Card>
+                <EditProfileForm user={user} />
 
                 <div className="grid grid-cols-2 gap-4">
                     <Card className="text-center py-6">
                         <div className="text-4xl font-extrabold text-blue-500 mb-2">
                             {totalPoints}
                         </div>
-                        <div className="text-xs text-slate-500 font-bold uppercase tracking-wide">
+                        <AppText
+                            size="xs"
+                            variant="secondary"
+                            className="uppercase tracking-wide"
+                        >
                             Total XP
-                        </div>
+                        </AppText>
                     </Card>
                     <Card className="text-center py-6">
                         <div className="text-4xl font-extrabold text-green-500 mb-2">
                             {completedLessons}
                         </div>
-                        <div className="text-xs text-slate-500 font-bold uppercase tracking-wide">
+                        <AppText
+                            size="xs"
+                            variant="secondary"
+                            className="uppercase tracking-wide"
+                        >
                             Lessons Done
-                        </div>
+                        </AppText>
                     </Card>
                 </div>
 
                 <div className="space-y-4">
-                    <h2 className="font-bold text-xl text-slate-700">
+                    <AppText as="h2" size="xl" variant="primary">
                         Settings
-                    </h2>
+                    </AppText>
                     <Card className="p-0 overflow-hidden">
                         <Link
                             href="/courses"

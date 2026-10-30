@@ -78,7 +78,7 @@ async function seed() {
             .select();
 
         // Create Exercise for Lesson 1 (Variables)
-        const lessonVariables = pythonLessons!.find(
+        const lessonVariables = pythonLessons?.find(
             (l) => l.title === "Variables",
         );
 
@@ -86,7 +86,7 @@ async function seed() {
             .from("exercises")
             .insert([
                 {
-                    lesson_id: lessonVariables!.id,
+                    lesson_id: lessonVariables?.id,
                     type: "SELECT",
                     question: "How do you print text in Python?",
                     image_src: null,
@@ -164,7 +164,7 @@ async function seed() {
             .select();
 
         // Create Exercise for Lesson 1
-        const jsLesson1 = jsLessons![0];
+        const jsLesson1 = jsLessons?.[0];
 
         const { data: jsExercise } = await supabase
             .from("exercises")
